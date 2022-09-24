@@ -1,37 +1,105 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
+	fmt.Println(braceTest())
+	fmt.Println(braceDeepTest())
 	var s Stack
-	s.Push(1)
-	s.Push(2)
-	s.Push(3)
-	fmt.Printf("%d poped from stack\n", s.Pop())
+
+	var confirm bool
+	str := "{\"t}{1}"
+	split := strings.Split(str, "")
+	if split[0] != "{" || split[0] == "[" || split[0] == "'" || split[0] == "\"" {
+		confirm = false
+		fmt.Println(confirm)
+	}
+	for _, splitStr := range split {
+		if splitStr == "{" || splitStr == "[" || splitStr == "'" || splitStr == "\"" {
+			s.Push(splitStr)
+		}
+		if splitStr == "}" || splitStr == "[" || splitStr == "'" || splitStr == "\"" {
+			s.Pop()
+		}
+	}
+	if s.IsEmpty() {
+		confirm = true
+	}
+	fmt.Println(confirm)
+	fmt.Println(s)
+}
+
+func braceTest() bool {
+	var s Stack
+
+	var confirm bool
+	str := "{t}{1}"
+	split := strings.Split(str, "")
+	if split[0] != "{" {
+		confirm = false
+		return confirm
+	}
+	for _, splitStr := range split {
+		if splitStr == "{" {
+			s.Push(splitStr)
+		}
+		if splitStr == "}" {
+			s.Pop()
+		}
+	}
+	if s.IsEmpty() {
+		confirm = true
+	}
+	return confirm
+}
+
+func braceDeepTest() bool {
+	var s Stack
+
+	var confirm bool
+	str := "{\"t}{1}"
+	split := strings.Split(str, "")
+	if split[0] != "{" || split[0] == "[" || split[0] == "'" || split[0] == "\"" {
+		confirm = false
+		return confirm
+	}
+	for _, splitStr := range split {
+		if splitStr == "{" || splitStr == "[" || splitStr == "'" || splitStr == "\"" {
+			s.Push(splitStr)
+		}
+		if splitStr == "}" || splitStr == "[" || splitStr == "'" || splitStr == "\"" {
+			s.Pop()
+		}
+	}
+	if s.IsEmpty() {
+		confirm = true
+	}
+	return confirm
 }
 
 type Stack []interface{}
 
-//IsEmpty - 스택이 비어있는지 확인하는 함수
+// IsEmpty
 func (s *Stack) IsEmpty() bool {
 	return len(*s) == 0
 }
 
-//Push - 스택에 값을 추가하는 함수.
+// Push
 func (s *Stack) Push(data interface{}) {
-	*s = append(*s, data) // 스택 끝(top)에 값을 추가함.
-	fmt.Printf("%d pushed to stack\n", data)
+	*s = append(*s, data)
 }
 
-//Pop - 스택에 값을 제거하고 top위치에 값을 반환하는 함수.
+// Pop
 func (s *Stack) Pop() interface{} {
 	if s.IsEmpty() {
-		fmt.Println("stack is empty")
 		return nil
 	} else {
 		top := len(*s) - 1
-		data := (*s)[top] // top 위치에 있는 값을 가져 옴
-		*s = (*s)[:top]   // 스택에 마지막 데이터 제거함
+		data := (*s)[top]
+		*s = (*s)[:top]
 		return data
 	}
 }
